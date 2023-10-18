@@ -9,6 +9,7 @@ import com.itperson.spzx.model.dto.system.LoginDto;
 import com.itperson.spzx.model.entity.system.SysUser;
 import com.itperson.spzx.model.vo.common.ResultCodeEnum;
 import com.itperson.spzx.model.vo.system.LoginVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,17 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public LoginVo login(LoginDto loginDto) {
+
+        String captcha = loginDto.getCaptcha();
+        String key = loginDto.getCodeKey();
+
+        String redisCode = redisTemplate.opsForValue().get("user:validate" + key);
+        if (StringUtils.isEmpty(redisCode) || !StringUtils.equalsAnyIgnoreCase(redisCode, captcha)) {
+            throw new PersonException(ResultCodeEnum.VALIDATECODE_ERROR);
+        }
+
+        redisTemplate.delete("user:validate" + key);
+
         String userName = loginDto.getUserName();
         SysUser sysUser = sysUserMapper.selectUserInfoByUserName(userName);
         if (sysUser == null) {
@@ -46,6 +58,18 @@ public class SysUserServiceImpl implements SysUserService {
         LoginVo loginVo = new LoginVo();
         loginVo.setToken(token);
         return loginVo;
+    }
+
+    @Override
+    public SysUser getUserInfo(String token) {
+        String userJson = redisTemplate.opsForValue().get("user:login:" + token);
+        SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
+        return sysUser;
+    }
+
+    @Override
+    public void logout(String token) {
+        redisTemplate.delete("user:login:" + token);
     }
 
 }
