@@ -38,7 +38,7 @@ public class IndexController {
     }
 
     @GetMapping("/getUserInfo")
-    public Result getUserInfo(@RequestHeader(name = "token") String token){
+    public Result getUserInfo(){
         return Result.build(AuthContextUtil.getAuthContext(),ResultCodeEnum.SUCCESS);
     }
 

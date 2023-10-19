@@ -26,7 +26,7 @@ public class LoginInterceptor  implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String method = request.getMethod();
-        if (("OPTIONS").equals(method)) {
+        if ("OPTIONS".equals(method)) {
             return true;
         }
 
@@ -36,7 +36,7 @@ public class LoginInterceptor  implements HandlerInterceptor {
             return false;
         }
 
-        String userInfoString = redisTemplate.opsForValue().get("user:login" + token);
+        String userInfoString = redisTemplate.opsForValue().get("user:login:" + token);
 
         if (StringUtils.isEmpty(userInfoString)) {
             responseNoLoginInfo(response);

@@ -19,6 +19,6 @@ mybatis:
 
 spzx:
   auth:
-    noAuthUrl:
+    noAuthUrls:
       - /admin/system/index/login
       - /admin/system/index/generateValidateCode
