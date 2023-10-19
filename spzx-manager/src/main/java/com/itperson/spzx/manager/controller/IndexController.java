@@ -3,11 +3,11 @@ package com.itperson.spzx.manager.controller;
 import com.itperson.spzx.manager.service.SysUserService;
 import com.itperson.spzx.manager.service.ValidateCodeService;
 import com.itperson.spzx.model.dto.system.LoginDto;
-import com.itperson.spzx.model.entity.system.SysUser;
 import com.itperson.spzx.model.vo.common.Result;
 import com.itperson.spzx.model.vo.common.ResultCodeEnum;
 import com.itperson.spzx.model.vo.system.LoginVo;
 import com.itperson.spzx.model.vo.system.ValidateCodeVo;
+import com.itperson.spzx.utils.AuthContextUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +39,7 @@ public class IndexController {
 
     @GetMapping("/getUserInfo")
     public Result getUserInfo(@RequestHeader(name = "token") String token){
-        SysUser sysUser = sysUserService.getUserInfo(token);
-        return Result.build(sysUser,ResultCodeEnum.SUCCESS);
+        return Result.build(AuthContextUtil.getAuthContext(),ResultCodeEnum.SUCCESS);
     }
 
     @GetMapping("/logout")
