@@ -2,10 +2,13 @@ package com.itperson.spzx.manager.service.Impl;
 
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.itperson.spzx.common.exception.PersonException;
 import com.itperson.spzx.manager.mapper.SysUserMapper;
 import com.itperson.spzx.manager.service.SysUserService;
 import com.itperson.spzx.model.dto.system.LoginDto;
+import com.itperson.spzx.model.dto.system.SysUserDto;
 import com.itperson.spzx.model.entity.system.SysUser;
 import com.itperson.spzx.model.vo.common.ResultCodeEnum;
 import com.itperson.spzx.model.vo.system.LoginVo;
@@ -70,6 +73,37 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void logout(String token) {
         redisTemplate.delete("user:login:" + token);
+    }
+
+    @Override
+    public PageInfo<SysUser> findByPage(Integer pageNum, Integer pageSize, SysUserDto sysUserDto) {
+        PageHelper.startPage(pageNum,pageSize);
+        return new PageInfo<>(sysUserMapper.findByPage(sysUserDto));
+    }
+
+    @Override
+    public void saveSysUser(SysUser sysUser) {
+        String userName = sysUser.getUserName();
+        SysUser dbSysUser = sysUserMapper.selectUserInfoByUserName(userName);
+        if (dbSysUser != null) {
+            throw new PersonException(ResultCodeEnum.USER_NAME_IS_EXISTS);
+        }
+
+        //对输入密码加密
+        String md5_password = SecureUtil.md5(sysUser.getPassword());
+        sysUser.setPassword(md5_password);
+
+        sysUserMapper.saveSysUser(sysUser);
+    }
+
+    @Override
+    public void updateSysUser(SysUser sysUser) {
+        sysUserMapper.updateSysUser(sysUser);
+    }
+
+    @Override
+    public void deleteSysUser(Integer id) {
+        sysUserMapper.deleteSysUser(id);
     }
 
 }

@@ -27,6 +27,6 @@ public class SysUser extends BaseEntity {
 	private String description;
 
 	@Schema(description = "状态（1：正常 0：停用）")
-	private Integer status;
+	private Integer status=1;
 
 }
