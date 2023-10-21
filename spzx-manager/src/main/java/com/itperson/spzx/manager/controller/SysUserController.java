@@ -2,6 +2,7 @@ package com.itperson.spzx.manager.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.itperson.spzx.manager.service.SysUserService;
+import com.itperson.spzx.model.dto.system.AssginRoleDto;
 import com.itperson.spzx.model.dto.system.SysUserDto;
 import com.itperson.spzx.model.entity.system.SysUser;
 import com.itperson.spzx.model.vo.common.Result;
@@ -43,6 +44,14 @@ public class SysUserController {
     @DeleteMapping(value = "/deleteSysUser/{userId}")
     public Result deleteSysUser(@PathVariable("userId") Integer id) {
         sysUserService.deleteSysUser(id);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
+    //用户分配角色
+    //保存分配数据
+    @PostMapping(value = "/saveAssignRole")
+    public Result saveAssignRole(@RequestBody AssginRoleDto assginRoleDto) {
+        sysUserService.doAssign(assginRoleDto);
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 

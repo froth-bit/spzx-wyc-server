@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.itperson.spzx.common.exception.PersonException;
+import com.itperson.spzx.manager.mapper.SysRoleUserMapper;
 import com.itperson.spzx.manager.mapper.SysUserMapper;
 import com.itperson.spzx.manager.service.SysUserService;
+import com.itperson.spzx.model.dto.system.AssginRoleDto;
 import com.itperson.spzx.model.dto.system.LoginDto;
 import com.itperson.spzx.model.dto.system.SysUserDto;
 import com.itperson.spzx.model.entity.system.SysUser;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +28,8 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysRoleUserMapper sysRoleUserMapper;
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
@@ -104,6 +109,15 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void deleteSysUser(Integer id) {
         sysUserMapper.deleteSysUser(id);
+    }
+
+    @Override
+    public void doAssign(AssginRoleDto assginRoleDto) {
+        sysRoleUserMapper.deleteByUserId(assginRoleDto.getUserId());
+
+        List<Long> roleIdList = assginRoleDto.getRoleIdList();
+        roleIdList.forEach(s-> sysRoleUserMapper.doAssign(assginRoleDto.getUserId(),s));
+
     }
 
 }
