@@ -33,9 +33,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             return null;
         }
 
-        List<SysMenu> sysMenus1 = MenuHelper.buildTree(sysMenus);
-
-        return sysMenus1;
+        return MenuHelper.buildTree(sysMenus);
     }
 
     @Override
