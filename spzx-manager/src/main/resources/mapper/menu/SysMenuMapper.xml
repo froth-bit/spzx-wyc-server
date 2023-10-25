@@ -57,4 +57,18 @@
           and is_deleted=0
     </select>
 
+    <select id="findMenusByUserId" resultMap="sysMenuMap">
+        select DISTINCT m.*
+        from sys_menu m
+                 inner join sys_role_menu srm on m.id = srm.menu_id
+                 inner join sys_user_role sur on srm.role_id = sur.role_id
+        where sur.user_id=#{userId} and m.is_deleted = 0
+    </select>
+
+    <!--找到父菜单-->
+    <select id="selectParentMenu" resultMap="sysMenuMap">
+        select <include refid="columns"/>
+        from sys_menu where id = #{parentId}
+    </select>
+
 </mapper>

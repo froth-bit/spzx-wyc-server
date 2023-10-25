@@ -23,4 +23,8 @@
         </foreach>
     </insert>
 
+    <update id="updateSysRoleMenuIsHalf">
+        update sys_role_menu set sys_role_menu.is_half = 1 where menu_id = #{menuId}
+    </update>
+
 </mapper>

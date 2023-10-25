@@ -13,5 +13,6 @@ public interface SysRoleMenuMapper {
 
     void doAssign(AssginMenuDto assginMenuDto);
 
+    void updateSysRoleMenuIsHalf(Long id);
 }
 
